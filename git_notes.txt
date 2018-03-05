@@ -1,0 +1,334 @@
+Questions:
+*** Q: How do you find what is your remote branch to push to?
+How can I find out which remote branch a local branch is tracking?
+
+$ git remote show origin
+
+
+
+*** How do you find your remote repository name (is it named "origin" or something else)?
+$ git remote show origin
+
+
+*** What is GIT HEAD?
+
+Think of the HEAD as the "current branch". When you switch branches with
+git checkout, the HEAD revision changes to point to the tip of the new branch
+You can see what HEAD points to by doing
+
+cat .git/HEAD
+
+
+
+
+-------------------------------------------------------------------------------
+* configurations stored in ~/.gitconfig
+
+
+
+- Clone repository from bitbucket
+
+git clone https://oaouda@bitbucket.org/oaouda/bitbucketstationlocations.git
+
+- Change directory to the directory where repository exists
+cd  bitbucketstationlocations
+
+- Create a file
+$ echo "Hello world" >> locations.txt
+
+- Check the status of the repository
+git status
+
+Notes " On branch Master"
+
+- Tell Git to track your new locations.txt file
+git add locations.txt
+The "add" command will stage the file so it is ready for commit
+
+- Commit the changes
+git commit -m "Initial commit'
+
+* You publish your local history by "pushing" branches to other repository
+* You see what others have contributed by "pulling" branches into your local repository
+
+
+- Push your changes to the master branch (the branch on Bitbucket) on origin(The bitbucket server)
+$ git push origin master
+
+- Create file in bitbucket, then pull the changes to local repository
+$ git pull --all
+
+
+- Create branch to fix a bugs from the master, which create new pointer to the current branch
+$ git branch future-plans
+
+- To begin working on the branch, you have to check out the branch you want to use
+Checkout the branch to work on it
+$ git checkout future-plans
+- Edit file -> stationsLocations
+- Enter git status. Notice the On branch future-plans
+$ git status
+
+- Stage the file. Make sure you are in the right branch by doing "git status"
+$ git add stationLocations
+- Commit your changes to the branch
+$ git commit statiosLocations -m "making a change in a branch"
+
+- Merge your branch : fast-forward  merging
+Switch to the master
+$ git checkout master
+$ git merge  future-plans
+
+- Since you are done with the future-plan you delete it
+$ git branch -d future-plans
+
+
+- Finally Push your changes to bitbucket
+$ git push origin master 
+
+
+
+Summary:
+Created a branch and checked it out
+Made a change in the new branch
+Committed the changed to the new branch 
+Integrated that change back into the main branch 
+Deleted the branch you are no longer using
+-------------------------------------------------------------------
+Git tutorial from 308tube channel
+
+$ git init <project folder> This will make a folder a git repository
+$ git status
+git status will tell you:
+- what branch you are on
+- what files have changed
+- what files are not tracked
+
+- hints on what to do next
+
+$ git .   (add all the files)
+$ git add <filename>
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------If you unstag want to remove what you just added
+$ git rm --cached <file>  
+
+$ git commit -m "message" <file>
+
+
+
+$ git log <file>
+
+If you want to discard the changes in the working directory
+$ git checkout --<file>
+
+To see the changes in the staging area
+$ git diff   -get the changes between your working area and what is in the staged area. Once you do 
+git add you added it to the staged area and when you do git diff you get no changes.
+To see the changes in this case, then use --cached.
+$ git diff --cached
+
+
+$ git long --oneline
+
+- Commit all the files 
+$ git commit -a -m "short cut"
+
+
+Summary:
+git init <project>     project now in the repository
+git add                add all the files to staging area (index(cache)
+git commit             save snapshot into local repository
+
+git status           status of files
+git log  commit history
+git diff  
+git diff --cached   differences in staging
+
+
+
+
+ -----------------------------------------------------------
+ Working with github
+ Create the project
+ cd inside the project
+ $ git init
+ $ do changes in the project
+ $ git add .
+ $ git commit -m "initial version"
+ 
+ Now you need to add the project to the remote repository
+ Create the repository in the github for example gitdemo
+ Go to github, select gitdemo and click on the SSH key. Copy this value, then add it the command below
+ $ git remote add origin  git@github.com:oaouda/gitdemo.git
+ You can call it github instead of origin
+ e.g.,
+ $ git remote add github git@github.com:oaouda/gitdemo.git
+ 
+ NOTE: origin is the name of the remote repository. it is the standard of naming the remote repository
+ $ git push origin master    (push master branch to the remote repository in github)
+ $ git remote add origin 
+
+To do more pushing to the remote:
+Do you changes
+$ git commit -m "....."
+$ git push origin master    (push to the orign (remote) repository my master branch)
+Enter the password
+----------------------------
+
+creating branch from master
+$ git branch
+master   (because you have not created any branches)
+
+- Create branch
+$ git branch <name>
+$ git branch r2_index
+$ git status    (You will see * next to the master branch, because that is the branch you are working on)
+$ git checkout r2_index
+$ git branch    (* next to r2_index)
+$ git status (On branch r2_index)
+
+Do your code changes
+$ git add .
+$ git commit -m "Changed the ....."
+$ git status
+
+$ git remote add github git@github.com:oaouda/com/bread.demo.git
+$ git push github r2_contacts    (push the new branch)
+Check github for updates, you will see 2 branches
+
+
+
+Now let say, that you have bug in production, where the "master" branch
+code is.  How to fix the bug
+1) Switch to the master branch
+$ git checkout master   (or the branch where the production is on)
+2) Do the code changes, and commit the code
+$ git add .
+$ git commit -m "BUGXXXX: Fixed the code initial value"
+3) Push the changes to the remote repository
+$ git push github  master (make sure you push the right branch..here is it master, because we changed the code in master)
+
+
+Now the other team needs to get the changes in the branch you just pushed to master
+So the other team will
+1) Go to their branch2) git pull <remote_name> <branch_name>
+ $ git pull github(or origin) master
+
+
+ ALWAYS do git pull before git push
+----------------------------------------------
+clone project from github
+1) Go where you want the project to because
+2) get the URL to clone the project from the URL
+$ git clone git@github.com:oaouda/part4demo.git
+3) cd to the directory where the project was clones
+$ git status
+
+
+- Combine the add and commit in one command
+$ git commit -a -m "commit message"
+
+ 
+ NOTES:
+ 
+ git pull does two things
+ 1) git fetch
+ 2) git merge
+ 
+
+--- TAGGING
+
+The ability to tag(commit/snapshot) specific points in (the commit) history as
+being important. Example would be to tag all the release points (version 1.0 and so on)
+
+Do your changes
+Commit the code
+$ git commit -a -m "commit message"
+Tag the code
+$ git tag -a v1.0 -m "release version 1.0"
+
+To see the tags:
+$ git tag
+
+Get details to the tag
+$ git show v1.0
+
+
+To push the tags to the remote
+$ git push origin <tagname>
+Example:
+$ git push origin v1.0
+
+
+Then go the other side and pull the tag
+$ git pull
+$ git tag
+
+To push all the tags to the remote repository
+$ git push origin --tag
+
+
+--- Viewing old commit
+
+get specific version. you need the hash value
+
+git checkout <commit_hash_value>
+$ git checkout 0a66099d1b9b75e835f91d8e9783c86f46a03a4b
+
+This will create temporary branch without name
+
+To back to where you came from
+$ git checkout master
+
+To get the source that was tagged
+
+$ git checkout v1.0
+
+To get back to the latest
+$ git checkout master
+
+Permanently go back to a previous commit/snapshot:
+You can use two commands:
+1. reset
+2. revert
+
+
+---- Reset 
+
+git reset --hard will reset the index and working tree (commit log). 
+Any changes before the reset commit is discarded ("rewriting history")
+Reset --hard /roll back is a permanent delete. Only use if you have not shared the project.
+if only in local box and want to rollback to previous commit, then you use reset.
+
+We want to go back to specific version.
+copy the hash
+
+
+git reset --hard <commit hash>
+
+$ git reset --hard 8fd3532596d0cbdb2ce87a1c24a85c86e307e19b
+
+
+
+
+
+-- Revert
+When you shared your object
+
+ A revert does not delete any history, instead it will create a new commit that will remove 
+ the changes from the previous commit. It is recommended that you revert in sequential order
+
+$ git revert  <SHA-1>
+ 
+ 
+ NOTE: everywhere where documentation says <commit> or <commit-ish> 
+ (or <object>), you can put an SHA-1 identifier (full or shortened) of commit.
+ 
+
+
+
+
+
+
+
+
