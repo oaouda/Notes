@@ -1,0 +1,30 @@
+angular notes
+
+To start the node server:
+ng server
+
+
+Visual Studio Code
+CTRL ~  (get the terminal for angular)
+Or View-> Integrated Terminal
+
+
+Each project
+
+index.html
+That is the main page, where you inject <app-root>
+
+
+*ngFor
+*ngIf
+
+- generate new componenet
+create directory under app folder call it component
+ng generate component [dir]/<name-of-componenet>
+Example
+ng generate component components/recipe-list
+
+
+
+
+
