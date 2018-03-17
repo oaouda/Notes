@@ -1,0 +1,19 @@
+assertEquals
+assertTrue
+assertFalse
+
+
+@Test
+public void   <test_name>
+No need to put test in front of the method. this was done before
+java 1.5 annotation to identify tests.
+
+
+
+
+@Before  (executed before each test) 
+@After (executed after each test)
+
+@BeforeClass (executed before the whole class)
+@AfterClass  (executed after the whole class)
+
