@@ -1,19 +1,451 @@
+
+------------------------------------------------------------------------------
 assertEquals
 assertTrue
 assertFalse
 
-
+------------------------------------------------------------------------------
 @Test
 public void   <test_name>
-No need to put test in front of the method. this was done before
+
+No need to put test in front of the method. This was done before
 java 1.5 annotation to identify tests.
-
-
-
-
+------------------------------------------------------------------------------
 @Before  (executed before each test) 
 @After (executed after each test)
 
 @BeforeClass (executed before the whole class)
 @AfterClass  (executed after the whole class)
+
+------------------------------------------------------------------------------
+- Compare two arrays
+assertArrayEquals
+
+- Testing for exception
+@Test (expected = NullPointerException.class)
+
+
+- Testing performance 
+@Test(timeout=100)  // this test should take 100 ms
+
+------------------------------------------------------------------------------
+- Parametrized test
+NOTE: Can apply to one class, because you can have only ONE input. 
+If you want to test different input (instead of AACD, you want
+to test for true or false, then you will need to create a
+another test class.
+
+1) Add @RunWith(Parameterized.class)   
+2) Create array to hold the expected and unexpected values
+3) Create private members for input and exepctedOutput
+4) Create constructor for the input and expectedOutput class members
+5) Use the input and epxectedOutput within the assertEquals method.
+
+@RunWith(Parameterized.class)  // 1
+public class StringHelperParametrizedTest {
+
+	StringHelper helper;
+	
+	private String input;           // 3
+	private String expectedOutput;  // 3
+	
+	
+	@Before
+	public void setup() {
+		helper = new StringHelper();
+	}
+	
+	@Parameters          // 2
+	public static Collection<String []> testConditions() {
+	// AACD input, CD output
+	
+		String expectedOutput [][] = {
+			{"AACD", "CD"},  // {input, output}
+			{"ACD", "CD"}};  
+	
+		return Arrays.asList(expectedOutput);
+	}
+	
+	// 4
+	public StringHelperParametrizedTest(String input, String expectedOutput) {
+		super();
+		this.input = input;
+		this.expectedOutput = expectedOutput;
+	}
+
+	@Test   //5 
+	public void testTruncateAInFirst2Position_AinFirst2Positions() {
+		assertEquals(expectedOutput, helper.truncateAInFirst2Positions(input));
+	}	
+}
+------------------------------------------------------------------------------
+- Organize your test
+
+Running some test together
+
+@RunWith(Suite.class)
+@SuiteClasses({ QuickBeforeAfterTest.class, StringHelperParametrizedTest.class })
+public class AllTests {
+}
+------------------------------------------------------------------------------
+https://github.com/in28minutes/MockitoTutorialForBeginners/
+- Mockito
+Update pom.xml to add the junit and mockito dependencies
+
+What is mocking
+mocking is creating objects that simulate the behavior of
+real objects. Unlike stubs, mocks can be dynamically created
+from code - at runtime.
+Mock offer more functionality than stubbing.
+You can verify method calls and a lot of other things.
+
+
+Example:
+//Mock the class that you want to use
+TodoService todoServiceMock = mock(TodoService.class);
+//
+List<String> todos = Arrays.asList("Learn Spring MVC", "Learn Spring", "Learn to Dance");
+// What to return when the mock class method is called
+when(todoServiceMock.retrieveTodos("Dummy")).thenReturn(todos);
+
+
+------------------------------------------------------------------------------
+- Argument matcher
+
+	when(listMock.get(0)).thenReturn("in28minutes");
+		
+		// Argument Matcher, every time list get is called
+		// anyInt, if called by any it
+		when(listMock.get(anyInt())).thenReturn("in28minutes");
+		
+	
+------------------------------------------------------------------------------
+- 
+Throw exception
+
+@Test(expected=RuntimeException.class)
+	public void letsMockListGet_throwException() {
+		List listMock = mock(List.class);
+				
+		// Argument Matcher, every time list get is called
+		// anyInt, if called by any it
+		when(listMock.get(anyInt())).thenThrow(new RuntimeException("Something went wrong"));
+	
+		listMock.get(0); // this will throw exception
+	}	
+
+------------------------------------------------------------------------------
+
+BDD: Behavior-driven development
+
+// Given - setup the test and mock
+
+// When  - actual method. system under test method calls
+
+// Then - asserts something has happened
+
+assertThat(cheese, is(equalTo(smelly)))</pre>
+instead of:
+assertThat(cheese, equalTo(smelly))</pre>
+
+Example:
+    @Test
+	public void letsMockListGet_usingBDD() {
+	
+		// Given
+		List <String>listMock = mock(List.class);			
+		given(listMock.get(anyInt())).willReturn("in28minutes");
+
+		// When
+		String firstElement = listMock.get(0);
+		
+		// Then		
+		assertThat(firstElement, is("in28minutes"));
+		 		
+	}
+	
+------------------------------------------------------------------------------
+- Verify
+Check if a method is called or not. 
+How many times a method is called
+
+@Test
+	public void testDeleteTodosRelatedToSpring_usingBDD() {
+		
+		// Given
+		TodoService todoServiceMock = mock(TodoService.class);		
+		List<String> todos = Arrays.asList("Learn Spring MVC", "Learn Spring", "Learn to Dance");			
+		given(todoServiceMock.retrieveTodos("Dummy")).willReturn(todos);
+		
+		// When
+		TodoBusinessImpl todoBusinessImpl = new TodoBusinessImpl(todoServiceMock);
+		todoBusinessImpl.deleteTodosNotRelatedToSpring("Dummy");			
+		
+		// Then
+		verify(todoServiceMock).deleteTodo("Learn to Dance");  	// one more more times	
+		verify(todoServiceMock, never()).deleteTodo("Learn Spring MVC");		
+		verify(todoServiceMock, times(1)).deleteTodo("Learn to Dance");
+		verify(todoServiceMock, atLeast(1)).deleteTodo("Learn to Dance");
+	
+	}
+	
+Also, you can use then() instead of verify 
+// Then
+		//-- verify(todoServiceMock).deleteTodo("Learn to Dance");		
+		then(todoServiceMock).should().deleteTodo("Learn to Dance");
+		
+		//- verify(todoServiceMock, never()).deleteTodo("Learn Spring MVC");
+		then(todoServiceMock).should(never()).deleteTodo("Learn Spring MVC");
+
+
+------------------------------------------------------------------------------
+- How to capture an argument which is passed to a mock: Argument Capture
+
+Example:
+		// Declare an argument capture
+		ArgumentCaptor<String> stringArgumentCaptor = ArgumentCaptor.forClass(String.class);
+		// Define argument capture on specific method call
+		// Capture the argument
+		
+		
+		
+		// Given
+		TodoService todoServiceMock = mock(TodoService.class);		
+		List<String> todos = Arrays.asList("Learn Spring MVC", "Learn Spring", "Learn to Dance");			
+		given(todoServiceMock.retrieveTodos("Dummy")).willReturn(todos);
+		
+		// When
+		TodoBusinessImpl todoBusinessImpl = new TodoBusinessImpl(todoServiceMock);
+		todoBusinessImpl.deleteTodosNotRelatedToSpring("Dummy");			
+		
+		// Then
+		//-- verify(todoServiceMock).deleteTodo("Learn to Dance");		
+		then(todoServiceMock).should().deleteTodo(stringArgumentCaptor.capture());
+		assertThat(stringArgumentCaptor.getValue(), is("Learn to Dance"));
+
+
+Example:
+		// Declare an argument capture
+		ArgumentCaptor<String> stringArgumentCaptor = ArgumentCaptor.forClass(String.class);
+		// Define argument capture on specific method call
+		// Capture the argument
+					
+		// Given
+		TodoService todoServiceMock = mock(TodoService.class);		
+		List<String> todos = Arrays.asList("Learn to Rock and Roll", "Learn Spring", "Learn to Dance");			
+		given(todoServiceMock.retrieveTodos("Dummy")).willReturn(todos);
+		
+		// When
+		TodoBusinessImpl todoBusinessImpl = new TodoBusinessImpl(todoServiceMock);
+		todoBusinessImpl.deleteTodosNotRelatedToSpring("Dummy");			
+		
+		// Here the deleteTodo was called multiple times
+		// Then	
+		then(todoServiceMock).should(times(2)).deleteTodo(stringArgumentCaptor.capture());
+		assertThat(stringArgumentCaptor.getAllValues().size(), is(2));
+
+------------------------------------------------------------------------------
+Mockito Annotations - @Mock, @InjectMocks, @RunWith, @Captor
+
+To use @Mock
+@RunWith(MockitoJUnitRunner.class)
+
+EXample
+public class TodoBusinessImplMockitoInjectMockTest {	
+	
+	// TodoService todoServiceMock = mock(TodoService.class);	
+	@Mock
+	TodoService todoServiceMock;
+	
+	// TodoBusinessImpl todoBusinessImpl = new TodoBusinessImpl(todoServiceMock);
+	@InjectMocks
+	TodoBusinessImpl todoBusinessImpl;
+
+	
+	// ArgumentCaptor<String> stringArgumentCaptor = ArgumentCaptor.forClass(String.class);
+	@Captor
+	ArgumentCaptor<String> stringArgumentCaptor;
+
+	@Test
+	public void testRetrieveTodosRelatedToSpring() {
+		
+		List<String> todos = Arrays.asList("Learn Spring MVC", "Learn Spring", "Learn to Dance");
+		when(todoServiceMock.retrieveTodos("Dummy"))
+			.thenReturn(todos);		
+					
+		List<String> filteredTodos = todoBusinessImpl
+				.retrieveTodosRelatedToSpring("Dummy");
+		assertEquals(2, filteredTodos.size());
+	}
+	
+	@Test
+	public void testRetrieveTodosRelatedToSpringWithEmptyList() {
+				
+		List<String> todos = Arrays.asList();
+		when(todoServiceMock.retrieveTodos("Dummy")).thenReturn(todos);		
+					
+		List<String> filteredTodos = todoBusinessImpl
+				.retrieveTodosRelatedToSpring("Dummy");
+		assertEquals(0, filteredTodos.size());
+	}
+	
+	@Test
+	public void testRetrieveTodosRelatedToSpring_usingBDDMock() {
+		
+		// Given
+		List<String> todos = Arrays.asList("Learn Spring MVC", "Learn Spring", "Learn to Dance");			
+		
+		given(todoServiceMock.retrieveTodos("Dummy")).willReturn(todos);		
+		// when(todoServiceMock.retrieveTodos("Dummy")).thenReturn(todos);
+		
+		// When
+		List<String> filteredTodos = todoBusinessImpl
+				.retrieveTodosRelatedToSpring("Dummy");
+		
+		// Then
+		// assertEquals(2, filteredTodos.size());
+		assertThat(filteredTodos.size(), is(2));
+	}
+	
+	@Test
+	public void testDeleteTodosRelatedToSpring_usingBDD() {
+		
+		// Given
+		List<String> todos = Arrays.asList("Learn Spring MVC", "Learn Spring", "Learn to Dance");			
+		given(todoServiceMock.retrieveTodos("Dummy")).willReturn(todos);
+		
+		// When
+		todoBusinessImpl.deleteTodosNotRelatedToSpring("Dummy");			
+		
+		// Then
+		//-- verify(todoServiceMock).deleteTodo("Learn to Dance");		
+		then(todoServiceMock).should().deleteTodo("Learn to Dance");
+		
+		//- verify(todoServiceMock, never()).deleteTodo("Learn Spring MVC");
+		then(todoServiceMock).should(never()).deleteTodo("Learn Spring MVC");
+		
+		verify(todoServiceMock, times(1)).deleteTodo("Learn to Dance");
+		verify(todoServiceMock, atLeast(1)).deleteTodo("Learn to Dance");	
+	}
+	
+	@Test
+	public void testDeleteTodosRelatedToSpring_usingBDD_argumentCapture() {
+		
+		// Declare an argument capture
+		ArgumentCaptor<String> stringArgumentCaptor = ArgumentCaptor.forClass(String.class);
+		// Define argument capture on specific method call
+		// Capture the argument
+		
+		
+		
+		// Given
+		List<String> todos = Arrays.asList("Learn Spring MVC", "Learn Spring", "Learn to Dance");			
+		given(todoServiceMock.retrieveTodos("Dummy")).willReturn(todos);
+		
+		// When
+		todoBusinessImpl.deleteTodosNotRelatedToSpring("Dummy");			
+		
+		// Then
+		//-- verify(todoServiceMock).deleteTodo("Learn to Dance");		
+		then(todoServiceMock).should().deleteTodo(stringArgumentCaptor.capture());
+		assertThat(stringArgumentCaptor.getValue(), is("Learn to Dance"));
+				
+	}
+	
+	@Test
+	public void testDeleteTodosRelatedToSpring_usingBDD_argumentCaptureMultipleTimes() {
+		
+		// Declare an argument capture
+		// Define argument capture on specific method call
+		// Capture the argument
+					
+		// Given
+		List<String> todos = Arrays.asList("Learn to Rock and Roll", "Learn Spring", "Learn to Dance");			
+		given(todoServiceMock.retrieveTodos("Dummy")).willReturn(todos);
+		
+		// When
+		todoBusinessImpl.deleteTodosNotRelatedToSpring("Dummy");			
+		
+		// Then
+		//-- verify(todoServiceMock).deleteTodo("Learn to Dance");		
+		then(todoServiceMock).should(times(2)).deleteTodo(stringArgumentCaptor.capture());
+		assertThat(stringArgumentCaptor.getAllValues().size(), is(2));
+				
+	}
+
+}
+------------------------------------------------------------------------------
+- Rules
+
+- One Junit Class can have only one Runner. So only one @RunWith
+@RunWith(MockitoJUnitRunner.class)
+
+- To create Rule
+@Rule
+- The rule will run before and after the test
+@Rule        // the rule has to be public
+public MockitoRule mockitoRule = MockitoJUnit.rule();
+
+- Instead of using the @RunWith, I can use the rule
+- You can define more than one Rule, but with Runner you 
+can have only one runner, but multiple Rule.
+
+------------------------------------------------------------------------------
+- Mockito Spy (Partial Mock)
+A spy enables you to watch real action, as well as change behavior when needed
+
+When you create a mock of something, if you try to change its value, nothing will
+happen
+
+Example:
+List arrayListSpy = mokc(ArrayList.class); 
+		assertEquals(0, arrayListMock.size());		
+		arrayListMock.add("Dummy");
+		assertEquals(1, arrayListMock.size()); // will fail		
+		
+
+The great thing about Spy, is you can stub certain methods
+
+List arrayListSpy = spy(ArrayList.class)
+stub(arrayListSpy.size()).thenReturn(5);  // always return 5
+assertEquals(5, arrayListSpy.size());
+
+Benefits of Spy, verify that specific method is called
+
+
+In general, Avoid Spy in Projects, because you use a little bit of actual class and mock another part of it
+
+Spy is more in legacy system, when you do not have access to the code of the dependency
+------------------------------------------------------------------------------
+Why Mockito doesn't mock private methods?
+
+https://github.com/mockito/mockito/wiki/Mockito-And-Private-Methods
+https://github.com/mockito/mockito/wiki/FAQ
+
+
+------------------------------------------------------------------------------
+- Using PowerMock and Mockito to invoke a private Method.
+
+------------------------------------------------------------------------------
+- How to write a good unit test
+    FIRST. https://pragprog.com/magazines/2012-01/unit-tests-are-first
+    Patterns - http://xunitpatterns.com
+    https://github.com/mockito/mockito/wiki/How-to-write-good-tests
+
+naming:
+	method_nameOfScenario_result
+
+Always think what I am testing
+
+------------------------------------------------------------------------------
+	
+
+
+
+
+
+
+
+
+
 
