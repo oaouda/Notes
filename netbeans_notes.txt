@@ -1,0 +1,8 @@
+
+View the packages 
+In the Projects window just invoke the context menu by right-clicking on any empty space then click View Java Packages as > Tree.
+
+To insert constructor or getters
+
+Alt + Insert (or select Source -> Insert Code). 
+The following menu will appear, where you can choose to generate whatever you want:

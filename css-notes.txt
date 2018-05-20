@@ -1,0 +1,33 @@
+what type of document your html?
+<!doctype html>
+
+RGB
+
+- background image
+  body {
+            background-image: url(dead-fish.jpg) ;
+            background-repeat: no-repeat;
+            background-position:    50%; /* centered in middle of web site */
+        }
+		
+- Padding
+left, top, right, bottom
+
+- width, and height
+		
+		
+Child selector
+p > a   // all the links  with parent paragrah
+p > a {
+ color: red;
+ font-size: 30px;
+}		
+
+
+- Pseudo elements  = pseudo (fake)
+piece of another element
+first letter of paragrah
+first line
+before
+after
+

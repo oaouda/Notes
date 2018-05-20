@@ -1,7 +1,25 @@
 angular notes
 
 To start the node server:
-ng server
+ng serve
+
+
+
+To create new project
+ng new  <project_name>
+
+
+Typescript compiler
+tsc
+
+- To run the typescript file
+tsc  <filename.ts>   # this will create the js file
+node <filename.js>   # to run the generated javascript file
+
+compile and run the file
+tsc <filename.ts> && node <filename.js>
+
+
 
 
 Visual Studio Code
@@ -10,19 +28,96 @@ Or View-> Integrated Terminal
 
 
 Each project
-
 index.html
 That is the main page, where you inject <app-root>
+
 
 
 *ngFor
 *ngIf
 
-- generate new componenet
-create directory under app folder call it component
-ng generate component [dir]/<name-of-componenet>
+- Generate new component
+create directory under app folder call it components
+ng generate component <dir>/<name-of-component>
+
 Example
 ng generate component components/recipe-list
+- shortcut
+ng g c component/recipe-list
+
+
+
+
+-- development environment
+src/app directory
+polyfills.ts  some browsers are missing some classes. it is collectio of code and 
+classes, finds what the browser does not have and insert it
+- angular-cli.json: define the application
+
+- main.ts : it runs the application
+index.html: specify the app_root  which is from 
+selector: app-root in the app.component.ts
+
+
+app.modules.ts
+export class AppModule {}
+
+----------------
+
+Directives have "@Directive" attributes or one of its subclasses.
+We have three primary types:
+1. Components (most common)
+2. Structural directives (*ngFor, *ngIf) actually change the structrual of html
+3. Attribute directives (ngModel) attributes on elements and modify the behavior, change
+the size, change the colors.
+
+
+think of app-component: top page manager....root level component
+change the app-component to be dispatcher
+
+
+
+- Various forms of Binding in Angular
+{{ expression }}
+
+Can use anywhere in our HTML
+<div> {{"Hello world!"}} </div>
+
+
+<div style="background-color: {[ bgcolor}} ">Hi</div>
+
+- Other form of data binding
+[var] "expression"  (in)
+This is passed to our Components via @Input() attribute
+
+(event)="doTheThing()"   (events, out)
+This is how we listen to events from other elements
+
+[(ngModel)]="expression" (two-way)
+Two-way binding - value sent to variable and updated as variable changes
+
+- The following are equivalent
+
+src="{{receipe.cover_image}}"
+[src]="receipe.cover_image"
+
+Which one? it does not matter...just pick one and be consistent about it
+
+For components we write, [prop] binds to an @Input() - marked variable
+For HTML element, it's a DOM property
+ - img has src  which is DOM property, so you bind to it
+ e.g., [src]=recipe.cover_image"
+
+What about things for which there is no DOM property?
+ - td colsspan property, for example does not have DOM property. This is element attribute
+ In this case, Need to use [attr.colspan]="value"
+ * When using the [] we are binding to DOM element property
+ 
+
+
+
+
+
 
 
 

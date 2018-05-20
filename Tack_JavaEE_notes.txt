@@ -1,0 +1,15 @@
+How to tackle JavaEE with adm-bien
+
+
+1. Create maven web project
+2. start with java class Restful web service
+Shared class goes into the business layer
+
+ChickensResource:  Rest control adaptor
+ChickenService: true boundary
+
+Then you create controller
+before you create the controller you need to create the beans.xml
+
+Boundary->Control->Entity
+
